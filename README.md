@@ -1,5 +1,7 @@
 # MicroOrm.Dapper.Repositories
 
+This is a fork of MicroOrm.Dapper.Repositories. It includes upsert and if no key property specified it assumes Id is the key. All credit goes to phnx47
+
 [![MyGet](https://img.shields.io/myget/phnx47-beta/vpre/MicroOrm.Dapper.Repositories.svg)](https://www.myget.org/feed/phnx47-beta/package/nuget/MicroOrm.Dapper.Repositories)
 [![NuGet](https://img.shields.io/nuget/v/MicroOrm.Dapper.Repositories.svg)](https://www.nuget.org/packages/MicroOrm.Dapper.Repositories)
 [![NuGet](https://img.shields.io/nuget/dt/MicroOrm.Dapper.Repositories.svg)](https://www.nuget.org/packages/MicroOrm.Dapper.Repositories)
