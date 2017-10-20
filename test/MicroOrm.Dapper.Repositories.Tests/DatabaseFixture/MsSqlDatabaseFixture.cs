@@ -13,9 +13,6 @@ namespace MicroOrm.Dapper.Repositories.Tests.DatabaseFixture
         {
             var connString = "Server=BHG-DC1-DEVSQL.bhg.com;Initial Catalog=master;Integrated Security=True";
 
-            if (Environments.IsAppVeyor)
-                connString = "Server=(local)\\SQL2016;Database=master;User ID=sa;Password=Password12!";
-
             Db = new MsSqlDbContext(connString);
 
             InitDb();
@@ -25,7 +22,7 @@ namespace MicroOrm.Dapper.Repositories.Tests.DatabaseFixture
 
         public void Dispose()
         {
-            Db.Connection.Execute($"USE master; DROP DATABASE {DbName}");
+            //Db.Connection.Execute($"USE master; DROP DATABASE {DbName}");
             Db.Dispose();
         }
 
@@ -53,7 +50,7 @@ namespace MicroOrm.Dapper.Repositories.Tests.DatabaseFixture
 
             CreateSchema("DAB");
 
-            Db.Connection.Execute(@"CREATE TABLE Users (Id int IDENTITY(1,1) not null, Name varchar(256) not null, AddressId int not null, PhoneId int not null, Deleted bit not null, UpdatedAt datetime2,  PRIMARY KEY (Id))");
+            Db.Connection.Execute(@"CREATE TABLE Users (Id int IDENTITY(1,1) not null, Name varchar(256) not null, AddressId int not null, PhoneId int not null, Deleted bit not null, UpdatedAt datetime, ModifiedAt datetime,  PRIMARY KEY (Id))");
             Db.Connection.Execute(@"CREATE TABLE Cars (Id int IDENTITY(1,1) not null, Name varchar(256) not null, UserId int not null, Status int not null, Data binary(16) null, PRIMARY KEY (Id))");
 
             Db.Connection.Execute(@"CREATE TABLE Addresses (Id int IDENTITY(1,1) not null, Street varchar(256) not null, CityId varchar(256) not null,  PRIMARY KEY (Id))");

@@ -102,7 +102,12 @@ namespace MicroOrm.Dapper.Repositories
         /// <summary>
         ///     Get object by Id
         /// </summary>
-        TEntity FindById(object id, IDbTransaction transaction = null);
+        TEntity FindById(object id);
+
+        /// <summary>
+        ///     Get object by Id
+        /// </summary>
+        TEntity FindById(object id, IDbTransaction transaction);
 
         /// <summary>
         ///     Get object by Id with join objects
@@ -164,7 +169,12 @@ namespace MicroOrm.Dapper.Repositories
         /// <summary>
         ///     Get object by Id
         /// </summary>
-        Task<TEntity> FindByIdAsync(object id, IDbTransaction transaction = null);
+        Task<TEntity> FindByIdAsync(object id);
+
+        /// <summary>
+        ///     Get object by Id
+        /// </summary>
+        Task<TEntity> FindByIdAsync(object id, IDbTransaction transaction);
 
         /// <summary>
         ///     Get object by Id with join objects
@@ -439,12 +449,17 @@ namespace MicroOrm.Dapper.Repositories
         /// <summary>
         ///     Insert object to DB
         /// </summary>
-        bool Insert(TEntity instance, IDbTransaction transaction = null);
+        bool Insert(TEntity instance);
 
         /// <summary>
         ///     Insert object to DB
         /// </summary>
-        Task<bool> InsertAsync(TEntity instance, IDbTransaction transaction = null);
+        Task<bool> InsertAsync(TEntity instance);
+
+        /// <summary>
+        ///     Insert object to DB
+        /// </summary>
+        Task<bool> InsertAsync(TEntity instance, IDbTransaction transaction);
 
         /// <summary>
         ///     Bulk Insert objects to DB
@@ -523,12 +538,12 @@ namespace MicroOrm.Dapper.Repositories
         /// <summary>
         ///     Bulk Update objects in DB
         /// </summary>
-        Task<bool> BulkUpdateAsync(IEnumerable<TEntity> instances, IDbTransaction transaction = null);
+        Task<bool> BulkUpdateAsync(IEnumerable<TEntity> instances);
 
         /// <summary>
         ///     Bulk Update objects in DB
         /// </summary>
-        bool BulkUpdate(IEnumerable<TEntity> instances, IDbTransaction transaction = null);
+        Task<bool> BulkUpdateAsync(IEnumerable<TEntity> instances, IDbTransaction transaction);
 
         /// <summary>
         /// Updates or Insert object in DB
@@ -536,9 +551,15 @@ namespace MicroOrm.Dapper.Repositories
         bool UpSert(TEntity instance, IDbTransaction transaction = null);
 
         /// <summary>
-        /// Updates or Insert object in DB
+        ///     Bulk Update objects in DB
         /// </summary>
-        Task<bool> UpSertAsync(TEntity instance, IDbTransaction transaction = null);
+        bool BulkUpdate(IEnumerable<TEntity> instances);
+
+        /// <summary>
+        ///     Bulk Update objects in DB
+        /// </summary>
+        bool BulkUpdate(IEnumerable<TEntity> instances, IDbTransaction transaction);
+
 
         /// <summary>
         ///     Get all objects with BETWEEN query

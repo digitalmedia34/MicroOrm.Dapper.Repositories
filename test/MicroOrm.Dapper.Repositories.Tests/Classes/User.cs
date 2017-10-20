@@ -18,6 +18,7 @@ namespace MicroOrm.Dapper.Repositories.Tests.Classes
         public string ReadOnly => "test";
 
         [Column(Order = 1)]
+        [UpsertKey]
         public string Name { get; set; }
 
         public int AddressId { get; set; }
@@ -39,5 +40,8 @@ namespace MicroOrm.Dapper.Repositories.Tests.Classes
 
         [UpdatedAt]
         public DateTime? UpdatedAt { get; set; }
+
+        [ModifiedAt]
+        public DateTime? ModifiedAt { get; set; }
     }
 }

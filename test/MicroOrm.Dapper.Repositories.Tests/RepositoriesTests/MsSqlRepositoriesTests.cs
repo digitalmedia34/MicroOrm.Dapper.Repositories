@@ -267,7 +267,7 @@ namespace MicroOrm.Dapper.Repositories.Tests.RepositoriesTests
              Assert.Equal(userFromDb.Name, user.Name);
          }
 
-[Fact]
+        [Fact]
         public void InsertBinaryData()
         {
             var guid = Guid.NewGuid();

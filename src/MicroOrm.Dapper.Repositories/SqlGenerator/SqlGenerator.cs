@@ -56,6 +56,16 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
         public SqlPropertyMetadata UpdatedAtPropertyMetadata { get; protected set; }
 
         /// <inheritdoc />
+        public bool HasModifiedAt => ModifiedAtProperty != null;
+
+        /// <inheritdoc />
+        public PropertyInfo ModifiedAtProperty { get; protected set; }
+
+        /// <inheritdoc />
+        public SqlPropertyMetadata ModifiedAtPropertyMetadata { get; protected set; }
+
+
+        /// <inheritdoc />
         public bool IsIdentity => IdentitySqlProperty != null;
 
         /// <inheritdoc />
@@ -75,6 +85,9 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
 
         /// <inheritdoc />
         public SqlJoinPropertyMetadata[] SqlJoinProperties { get; protected set; }
+
+        ///<inheritdoc />
+        public SqlPropertyMetadata[] KeyUpsertSqlProperties { get; protected set; }
 
         /// <inheritdoc />
         public SqlGeneratorConfig Config { get; protected set; }
@@ -160,12 +173,33 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
             if (HasUpdatedAt)
                 UpdatedAtProperty.SetValue(entity, DateTime.UtcNow);
 
+            if(HasModifiedAt)
+                ModifiedAtProperty.SetValue(entity, DateTime.Now);
+
             var query = new SqlQuery(entity);
             var valueFields = string.Join(", ", properties.Select(p => " @" + p.PropertyName));
             var selectFields = string.Join(", ", properties.Select(p => p.PropertyName));
-            var where = string.Join(" AND ", KeySqlProperties.Select(p => "target" + p.ColumnName + " = @" + p.PropertyName));
+            var where = string.Join(" AND ", KeySqlProperties.Select(p => "target." + p.ColumnName + " = @" + p.PropertyName));
 
-            var update = "UPDATE SET " + string.Join(", ", properties.Select(p => p.ColumnName + " = @" + p.PropertyName));
+            //override where if we have attributes
+            if (KeyUpsertSqlProperties.Any())
+                where = string.Join(" AND ", KeyUpsertSqlProperties.Select(p => "target." + p.ColumnName + " = @" + p.PropertyName));
+
+            //exclude update at when has modified is enabled
+            var update = string.Empty;
+            if (HasModifiedAt)
+            {
+                update = "UPDATE SET " +
+                         string.Join(", ", properties.Where(e => e.PropertyName != UpdatedAtProperty.Name)
+                             .Select(p => p.ColumnName + " = @" + p.PropertyName));
+            }
+            else
+            {
+                //exclude both modified and updated at
+                update = "UPDATE SET " + string.Join(", ", properties.Where(e => e.PropertyName != UpdatedAtProperty.Name && e.PropertyName != ModifiedAtProperty.Name)
+                                                                     .Select(p => p.ColumnName + " = @" + p.PropertyName));
+            }
+
 
             var insert = "INSERT "
                         + "(" + string.Join(", ", properties.Select(p => p.ColumnName)) + ")" // columNames
@@ -452,6 +486,11 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
             // Filter the non stored properties
             SqlProperties = props.Where(p => !p.GetCustomAttributes<NotMappedAttribute>().Any()).Select(p => new SqlPropertyMetadata(p)).ToArray();
 
+            KeyUpsertSqlProperties =
+                props.Where(e => e.GetCustomAttributes<UpsertKeyAttribute>().Any())
+                    .Select(p => new SqlPropertyMetadata(p))
+                    .ToArray();
+
             // Filter key properties
             KeySqlProperties = props.Where(p => p.GetCustomAttributes<KeyAttribute>().Any()).Select(p => new SqlPropertyMetadata(p)).ToArray();
 
@@ -475,6 +514,15 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
             {
                 UpdatedAtProperty = props.FirstOrDefault(p => p.GetCustomAttributes<UpdatedAtAttribute>().Any());
                 UpdatedAtPropertyMetadata = new SqlPropertyMetadata(UpdatedAtProperty);
+            }
+
+            var updatedDateProperty = props.FirstOrDefault(p => p.GetCustomAttributes<UpdatedAtAttribute>().Count() == 1);
+            if (updatedDateProperty != null &&
+                (updatedDateProperty.PropertyType == typeof(DateTime) ||
+                 updatedDateProperty.PropertyType == typeof(DateTime?)))
+            {
+                ModifiedAtProperty = props.FirstOrDefault(p => p.GetCustomAttributes<ModifiedAtAttribute>().Any());
+                ModifiedAtPropertyMetadata = new SqlPropertyMetadata(ModifiedAtProperty);
             }
 
         }
