@@ -9,7 +9,7 @@ namespace MicroOrm.Dapper.Repositories.Attributes
     /// <summary>
     /// Attribute used in upsert, if present.
     /// </summary>
-    public class ModifiedAtAttribute: Attribute
+    public sealed class ModifiedAtAttribute: Attribute
     {
     }
 }

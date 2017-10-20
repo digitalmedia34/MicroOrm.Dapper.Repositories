@@ -516,10 +516,10 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
                 UpdatedAtPropertyMetadata = new SqlPropertyMetadata(UpdatedAtProperty);
             }
 
-            var updatedDateProperty = props.FirstOrDefault(p => p.GetCustomAttributes<UpdatedAtAttribute>().Count() == 1);
-            if (updatedDateProperty != null &&
-                (updatedDateProperty.PropertyType == typeof(DateTime) ||
-                 updatedDateProperty.PropertyType == typeof(DateTime?)))
+            var modifiedDateProperty = props.FirstOrDefault(p => p.GetCustomAttributes<ModifiedAtAttribute>().Count() == 1);
+            if (modifiedDateProperty != null &&
+                (modifiedDateProperty.PropertyType == typeof(DateTime) ||
+                 modifiedDateProperty.PropertyType == typeof(DateTime?)))
             {
                 ModifiedAtProperty = props.FirstOrDefault(p => p.GetCustomAttributes<ModifiedAtAttribute>().Any());
                 ModifiedAtPropertyMetadata = new SqlPropertyMetadata(ModifiedAtProperty);

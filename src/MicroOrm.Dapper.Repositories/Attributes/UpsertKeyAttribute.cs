@@ -9,7 +9,7 @@ namespace MicroOrm.Dapper.Repositories.Attributes
     /// <summary>
     /// Attribute used in upsert key attribute
     /// </summary>
-    public class UpsertKeyAttribute: Attribute
+    public sealed class UpsertKeyAttribute: Attribute
     {
     }
 }

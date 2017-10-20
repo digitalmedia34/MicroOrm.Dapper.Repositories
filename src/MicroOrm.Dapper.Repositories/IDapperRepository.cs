@@ -551,6 +551,14 @@ namespace MicroOrm.Dapper.Repositories
         bool UpSert(TEntity instance, IDbTransaction transaction = null);
 
         /// <summary>
+        /// Updates or Insert object in DB async
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        Task<bool> UpSertAsync(TEntity instance, IDbTransaction transaction = null);
+
+        /// <summary>
         ///     Bulk Update objects in DB
         /// </summary>
         bool BulkUpdate(IEnumerable<TEntity> instances);
