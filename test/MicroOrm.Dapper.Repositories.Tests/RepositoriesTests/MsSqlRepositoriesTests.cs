@@ -257,13 +257,20 @@ namespace MicroOrm.Dapper.Repositories.Tests.RepositoriesTests
          {
              var user = new User
              {
-                 Name = "Sergey Updated"
+                 Name = "Sergey Updated",
+                 AddressId = 1
              };
  
              var insert = _sqlDatabaseFixture.Db.Users.UpSert(user);
              Assert.True(insert);
- 
-             var userFromDb = _sqlDatabaseFixture.Db.Users.Find(q => q.Id == user.Id);
+
+             user.AddressId = 5;
+             var insert1 = _sqlDatabaseFixture.Db.Users.UpSert(user);
+
+             user.Name = "Sergey Updated3";
+             var insert2 = _sqlDatabaseFixture.Db.Users.UpSert(user);
+
+            var userFromDb = _sqlDatabaseFixture.Db.Users.Find(q => q.Id == user.Id);
              Assert.Equal(userFromDb.Name, user.Name);
          }
 

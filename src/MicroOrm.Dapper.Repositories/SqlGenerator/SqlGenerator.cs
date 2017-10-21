@@ -177,8 +177,21 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
                 ModifiedAtProperty.SetValue(entity, DateTime.Now);
 
             var query = new SqlQuery(entity);
-            var valueFields = string.Join(", ", properties.Select(p => " @" + p.PropertyName));
-            var selectFields = string.Join(", ", properties.Select(p => p.PropertyName));
+            var valueFields = string.Join(", ", KeyUpsertSqlProperties.Select(p => " @" + p.PropertyName));
+            var selectFields = string.Join(", ", KeyUpsertSqlProperties.Select(p => p.PropertyName));
+
+            //var valueFields = string.Join(", ", properties.Where(e => !e.PropertyName.Equals(UpdatedAtPropertyMetadata.PropertyName)
+            //                                                    && !e.PropertyName.Equals(ModifiedAtPropertyMetadata.PropertyName))
+            //                                              .Select(p => " @" + p.PropertyName));
+
+            //var selectFields = string.Join(", ", properties.Where(e => !e.PropertyName.Equals(UpdatedAtPropertyMetadata.PropertyName)
+            //                                                    && !e.PropertyName.Equals(ModifiedAtPropertyMetadata.PropertyName))
+            //                                               .Select(p => p.PropertyName));
+
+            //var where = string.Join(" AND ", properties.Where(e => !e.PropertyName.Equals(UpdatedAtPropertyMetadata.PropertyName)
+            //                                                    && !e.PropertyName.Equals(ModifiedAtPropertyMetadata.PropertyName))
+            //                                            .Select(p => "target." + p.ColumnName + " = @" + p.PropertyName));
+
             var where = string.Join(" AND ", KeySqlProperties.Select(p => "target." + p.ColumnName + " = @" + p.PropertyName));
 
             //override where if we have attributes
