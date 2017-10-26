@@ -177,8 +177,8 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
                 ModifiedAtProperty.SetValue(entity, DateTime.Now);
 
             var query = new SqlQuery(entity);
-            var valueFields = string.Join(", ", KeyUpsertSqlProperties.Select(p => " @" + p.PropertyName));
-            var selectFields = string.Join(", ", KeyUpsertSqlProperties.Select(p => p.PropertyName));
+            var valueFields = string.Join(", ", KeySqlProperties.Select(p => " @" + p.PropertyName));
+            var selectFields = string.Join(", ", KeySqlProperties.Select(p => p.PropertyName));
 
             //var valueFields = string.Join(", ", properties.Where(e => !e.PropertyName.Equals(UpdatedAtPropertyMetadata.PropertyName)
             //                                                    && !e.PropertyName.Equals(ModifiedAtPropertyMetadata.PropertyName))
@@ -196,20 +196,26 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
 
             //override where if we have attributes
             if (KeyUpsertSqlProperties.Any())
+            {
                 where = string.Join(" AND ", KeyUpsertSqlProperties.Select(p => "target." + p.ColumnName + " = @" + p.PropertyName));
+                valueFields = string.Join(", ", KeyUpsertSqlProperties.Select(p => " @" + p.PropertyName));
+                selectFields = string.Join(", ", KeyUpsertSqlProperties.Select(p => p.PropertyName));
+            }
+                
 
             //exclude update at when has modified is enabled
             var update = string.Empty;
             if (HasModifiedAt)
             {
                 update = "UPDATE SET " +
-                         string.Join(", ", properties.Where(e => e.PropertyName != UpdatedAtProperty.Name)
+                         string.Join(", ", properties.Where(e => e.PropertyName != UpdatedAtProperty?.Name)
                              .Select(p => p.ColumnName + " = @" + p.PropertyName));
             }
             else
             {
                 //exclude both modified and updated at
-                update = "UPDATE SET " + string.Join(", ", properties.Where(e => e.PropertyName != UpdatedAtProperty.Name && e.PropertyName != ModifiedAtProperty.Name)
+                update = "UPDATE SET " + 
+                          string.Join(", ", properties.Where(e => e.PropertyName != UpdatedAtProperty?.Name && e.PropertyName != ModifiedAtProperty?.Name)
                                                                      .Select(p => p.ColumnName + " = @" + p.PropertyName));
             }
 
@@ -223,8 +229,6 @@ namespace MicroOrm.Dapper.Repositories.SqlGenerator
 
             if (IsIdentity)
                 query.SqlBuilder.Append("SELECT SCOPE_IDENTITY() AS " + IdentitySqlProperty.ColumnName);
-
-            //query.SqlBuilder.Append("UPDATE " + TableName + " SET " + string.Join(", ", properties.Select(p => p.ColumnName + " = @" + p.PropertyName)) + " WHERE " + string.Join(" AND ", KeySqlProperties.Select(p => p.ColumnName + " = @" + p.PropertyName)));
 
             return query;
         }
