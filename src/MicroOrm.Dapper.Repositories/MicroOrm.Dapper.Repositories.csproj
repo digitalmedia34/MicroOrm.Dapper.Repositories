@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Description>CRUD for Dapper</Description>
+        <Copyright>2018 © Antonio Suarez</Copyright>
+        <AssemblyTitle>MicroOrm.Dapper.Repositories</AssemblyTitle>
+        <VersionPrefix>1.9.0</VersionPrefix>
+        <Authors>Antonio Suarez</Authors>
+        <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard2.0</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">net461;netstandard2.0</TargetFrameworks>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageId>MicroOrm.Dapper.Repositories</PackageId>
+        <PackageTags>dapper;micro-orm;repositories;crud</PackageTags>
+        <PackageReleaseNotes>http://teamservices:83/tfs/DefaultCollection/BHG.MicroOrm.Dapper.Repositories</PackageReleaseNotes>
+        <PackageIconUrl>https://image.ibb.co/itOgt5/database.png</PackageIconUrl>
+        <PackageProjectUrl>http://teamservices:83/tfs/DefaultCollection/BHG.MicroOrm.Dapper.Repositories</PackageProjectUrl>
+        <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>http://teamservices:83/tfs/DefaultCollection/BHG.MicroOrm.Dapper.Repositories</RepositoryUrl>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DebugType>Full</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="1.50.4" />
+        <PackageReference Include="Polly" Version="6.0.1" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+        <Reference Include="System.Data" />
+        <Reference Include="System.ComponentModel.DataAnnotations" />
+        <Reference Include="System" />
+        <Reference Include="Microsoft.CSharp" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+    </ItemGroup>
+</Project>

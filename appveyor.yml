@@ -1,0 +1,52 @@
+version: '{build}-{branch}'
+image: Visual Studio 2017
+
+environment:
+  codecov_token:
+    secure: 4Oh5pf7ov9A647gFmKZJQaFerM/M1au9oVpRcocb6uPE9sV4DfO8vzl1h9HihPlX
+
+skip_commits:
+  files:
+    - '**/*.md'
+
+services: 
+- mssql2016
+
+before_build:
+- ps: choco install opencover.portable
+- ps: choco install codecov
+
+build_script:
+- ps: .\build.ps1
+
+test_script:
+- ps: .\test.ps1
+
+after_test:
+- ps: .\codecov.ps1
+- ps: .\pack.ps1
+
+artifacts:
+- path: '**\artifacts\nuget\*.nupkg'
+  name: NuGet
+- path: '**\artifacts\myget\*.nupkg'
+  name: MyGet
+
+deploy:
+
+- provider: NuGet
+  api_key:
+    secure: ZWN99UOlUq7ILlVxQmWxn5+FzwDAIdyYYnPc/WBDTVzklrgX+jOzs2UHJOruyvrf
+  artifact: NuGet
+  on:
+    appveyor_repo_tag: true
+    
+- provider: NuGet
+  server: https://www.myget.org/F/phnx47-beta/api/v2/package
+  api_key:
+    secure: sra89qUYhiuc146gUszl0lg1u3tWG1Zc65B7lgVuZlIfxyq/3w4q3mkXeBiLpNA5
+  symbol_server: https://www.myget.org/F/phnx47-beta/symbols/api/v2/package
+  artifact: MyGet
+  on:
+    branch: master
+    appveyor_repo_tag: false
